@@ -1,0 +1,30 @@
+{
+    "name": "ardeveloppement/flysystem-ardev-static",
+    "description": "This is an HTTP client based on cURL to consume STATIC API",
+    "homepage": "https://github.com/ArDeveloppement/flysystem-ardev-static.git",
+    "type": "library",
+    "authors": [
+        {
+            "name": "ArDeveloppement",
+            "email": "contact@ardeveloppement.fr"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": { "ArDev\\Flysystem\\Adapter\\": "src" }
+    },
+
+    "require": {
+        "php": ">=5.4"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "~4.4",
+        "m6web/coke": "~2.0",
+        "league/flysystem": "~1.0.9"
+    },
+
+    "config": {
+        "bin-dir": "bin"
+    }
+}
