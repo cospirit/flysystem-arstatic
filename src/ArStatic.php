@@ -14,11 +14,18 @@ class ArStatic implements AdapterInterface
     protected $apiUrl;
 
     /**
-     * @param string $apiUrl
+     * @var string
      */
-    public function __construct($apiUrl)
+    protected $application;
+
+    /**
+     * @param string $apiUrl
+     * @param string $application
+     */
+    public function __construct($apiUrl, $application)
     {
         $this->apiUrl = rtrim($apiUrl, '/');
+        $this->application = $application;
     }
 
     /**
@@ -28,7 +35,7 @@ class ArStatic implements AdapterInterface
      * @param string $contents
      * @param Config $config Config object
      *
-     * @ad(turn array|false false on failure file meta data on success
+     * @return array|false false on failure file meta data on success
      */
     public function write($path, $contents, Config $config = null)
     {
@@ -47,7 +54,7 @@ class ArStatic implements AdapterInterface
         ];
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl);
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_exec($ch);
@@ -148,7 +155,7 @@ class ArStatic implements AdapterInterface
     public function delete($path)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$path);
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$path);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         curl_exec($ch);
         $response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -205,7 +212,7 @@ class ArStatic implements AdapterInterface
     public function has($path)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$path);
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$path);
         curl_setopt($ch, CURLOPT_NOBODY, 1);
         curl_exec($ch);
         $response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -224,7 +231,7 @@ class ArStatic implements AdapterInterface
     public function read($path)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$path);
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$path);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $contents = curl_exec($ch);
