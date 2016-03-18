@@ -57,6 +57,7 @@ class ArStatic implements AdapterInterface
         curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_exec($ch);
         $fileInfo = curl_getinfo($ch);
         curl_close($ch);
