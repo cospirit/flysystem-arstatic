@@ -343,4 +343,24 @@ class ArStatic implements AdapterInterface
     {
         throw new NotSupportedException();
     }
+
+    /**
+     * @param string
+     * @return bool|string
+     */
+    public function getAbsolutePath($slug)
+    {
+        if ($this->has($slug)) {
+            $absolutePath = sprintf(
+                '%s/%s/%s',
+                $this->apiUrl,
+                $this->application,
+                $slug
+            );
+
+            return $absolutePath;
+        }
+
+        return false;
+    }
 }
