@@ -272,7 +272,16 @@ class ArStatic implements AdapterInterface
      */
     public function listContents($directory = '', $recursive = false)
     {
-        throw new NotSupportedException();
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$directory.'/list');
+        curl_setopt ($curl, CURLOPT_RETURNTRANSFER, true) ;
+        curl_setopt ($curl, CURLOPT_TIMEOUT, '12');
+
+        $root = curl_exec($curl);
+        $directories = json_decode($root);
+        curl_close($curl);
+
+        return $directories;
     }
 
     /**
