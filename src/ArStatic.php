@@ -363,4 +363,12 @@ class ArStatic implements AdapterInterface
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function getRootPath()
+    {
+        return sprintf('%s/%s', $this->apiUrl, $this->application);
+    }
 }
