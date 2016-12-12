@@ -1,4 +1,4 @@
-# flysystem-ardev-static
+# flysystem-arstatic
 
 This is an HTTP client based on cURL to consume STATIC API
 
@@ -12,39 +12,45 @@ This is an HTTP client based on cURL to consume STATIC API
 
 Clone the project
 
-    $ git@github.com:ArDeveloppement/flysystem-ardev-static.git
-    $ cd flysystem-ardev-static
+    $ git@github.com:ArDeveloppement/flysystem-arstatic.git
+    $ cd flysystem-arstatic
     
 Initialize project
 
-    ⇒ composer install
+    $ composer install
     
 ### Usage
 
-    use ArDev\Flysystem\Adapter\ArStatic;
-    use League\Flysystem\Filesystem;
-    
-    $adapter = new ArStatic($apiUrl);
-    $filesystem = new Filesystem($adapter);
+```php
+use ArDev\Flysystem\Adapter\ArStatic;
+use League\Flysystem\Filesystem;
+
+$adapter = new ArStatic($apiUrl);
+$filesystem = new Filesystem($adapter);
+```
 
 #### Implemented methods
 
 Write
-
-    $filesystem->write($slug, file_get_contents($tmpName));
+```php
+$filesystem->write($slug, file_get_contents($tmpName));
+```
     
 Read
-
-    $filesystem->read($slug);
+```php
+$filesystem->read($slug);
+```
     
 Has
-
-    $filesystem->has($slug);
+```php
+$filesystem->has($slug);
+```
     
 Delete
-
-    $filesystem->delete($slug);
+```php
+$filesystem->delete($slug);
+```
     
 ### Tests
 
-    make test-suite
+    $ make test-suite
