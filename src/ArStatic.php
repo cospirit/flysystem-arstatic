@@ -34,7 +34,6 @@ class ArStatic implements AdapterInterface
      * @param string $path
      * @param string $contents
      * @param Config $config Config object
-     *
      * @return array|false false on failure file meta data on success
      */
     public function write($path, $contents, Config $config = null)
@@ -69,13 +68,13 @@ class ArStatic implements AdapterInterface
                 'contents' => $contents,
                 'type'     => $fileInfo['content_type'],
                 'size'     => $fileInfo['size_download'],
-                'path'     => $path
+                'path'     => $path,
             ];
 
             return $response;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -84,8 +83,9 @@ class ArStatic implements AdapterInterface
      * @param string $path
      * @param resource $resource
      * @param Config $config Config object
-     *
      * @return array|false false on failure file meta data on success
+     *
+     * @throws NotSupportedException
      */
     public function writeStream($path, $resource, Config $config)
     {
@@ -98,8 +98,9 @@ class ArStatic implements AdapterInterface
      * @param string $path
      * @param string $contents
      * @param Config $config Config object
-     *
      * @return array|false false on failure file meta data on success
+     *
+     * @throws NotSupportedException
      */
     public function update($path, $contents, Config $config)
     {
@@ -112,8 +113,9 @@ class ArStatic implements AdapterInterface
      * @param string $path
      * @param resource $resource
      * @param Config $config Config object
-     *
      * @return array|false false on failure file meta data on success
+     *
+     * @throws NotSupportedException
      */
     public function updateStream($path, $resource, Config $config)
     {
@@ -125,8 +127,9 @@ class ArStatic implements AdapterInterface
      *
      * @param string $path
      * @param string $newpath
-     *
      * @return bool
+     *
+     * @throws NotSupportedException
      */
     public function rename($path, $newpath)
     {
@@ -138,8 +141,9 @@ class ArStatic implements AdapterInterface
      *
      * @param string $path
      * @param string $newpath
-     *
      * @return bool
+     *
+     * @throws NotSupportedException
      */
     public function copy($path, $newpath)
     {
@@ -150,7 +154,6 @@ class ArStatic implements AdapterInterface
      * Delete a file.
      *
      * @param string $path
-     *
      * @return bool
      */
     public function delete($path)
@@ -169,8 +172,9 @@ class ArStatic implements AdapterInterface
      * Delete a directory.
      *
      * @param string $dirname
-     *
      * @return bool
+     *
+     * @throws NotSupportedException
      */
     public function deleteDir($dirname)
     {
@@ -182,8 +186,9 @@ class ArStatic implements AdapterInterface
      *
      * @param string $dirname directory name
      * @param Config $config
-     *
      * @return array|false
+     *
+     * @throws NotSupportedException
      */
     public function createDir($dirname, Config $config)
     {
@@ -195,8 +200,9 @@ class ArStatic implements AdapterInterface
      *
      * @param string $path
      * @param string $visibility
-     *
      * @return array|false file meta data
+     *
+     * @throws NotSupportedException
      */
     public function setVisibility($path, $visibility)
     {
@@ -207,7 +213,6 @@ class ArStatic implements AdapterInterface
      * Check whether a file exists.
      *
      * @param string $path
-     *
      * @return bool
      */
     public function has($path)
@@ -226,7 +231,6 @@ class ArStatic implements AdapterInterface
      * Read a file.
      *
      * @param string $path
-     *
      * @return array|false
      */
     public function read($path)
@@ -240,7 +244,7 @@ class ArStatic implements AdapterInterface
 
         $response = [
             'contents' => $contents,
-            'path'     => $path
+            'path'     => $path,
         ];
 
         if ($contents === false) {
@@ -254,7 +258,6 @@ class ArStatic implements AdapterInterface
      * Read a file as a stream.
      *
      * @param string $path
-     *
      * @return array|false
      */
     public function readStream($path)
@@ -267,7 +270,6 @@ class ArStatic implements AdapterInterface
      *
      * @param string $directory
      * @param bool $recursive
-     *
      * @return array
      */
     public function listContents($directory = '', $recursive = false)
@@ -288,8 +290,9 @@ class ArStatic implements AdapterInterface
      * Get all the meta data of a file or directory.
      *
      * @param string $path
-     *
      * @return array|false
+     *
+     * @throws NotSupportedException
      */
     public function getMetadata($path)
     {
@@ -300,8 +303,9 @@ class ArStatic implements AdapterInterface
      * Get all the meta data of a file or directory.
      *
      * @param string $path
-     *
      * @return array|false
+     *
+     * @throws NotSupportedException
      */
     public function getSize($path)
     {
@@ -312,8 +316,9 @@ class ArStatic implements AdapterInterface
      * Get the mimetype of a file.
      *
      * @param string $path
-     *
      * @return array|false
+     *
+     * @throws NotSupportedException
      */
     public function getMimetype($path)
     {
@@ -324,8 +329,9 @@ class ArStatic implements AdapterInterface
      * Get the timestamp of a file.
      *
      * @param string $path
-     *
      * @return array|false
+     *
+     * @throws NotSupportedException
      */
     public function getTimestamp($path)
     {
@@ -336,8 +342,9 @@ class ArStatic implements AdapterInterface
      * Get the visibility of a file.
      *
      * @param string $path
-     *
      * @return array|false
+     *
+     * @throws NotSupportedException
      */
     public function getVisibility($path)
     {
@@ -345,30 +352,25 @@ class ArStatic implements AdapterInterface
     }
 
     /**
-     * @param string
+     * @param string $slug
      * @return bool|string
      */
-    public function getAbsolutePath($slug)
+    public function getAbsolutePath($slug = '')
     {
-        if ($this->has($slug)) {
-            $absolutePath = sprintf(
-                '%s/%s/%s',
-                $this->apiUrl,
-                $this->application,
-                $slug
-            );
+        $absolutePath = sprintf(
+            '%s/%s/',
+            $this->apiUrl,
+            $this->application
+        );
 
-            return $absolutePath;
+        if (!empty($slug)) {
+            if ($this->has($slug)) {
+                return $absolutePath + $slug;
+            }
+
+            return false;
         }
 
-        return false;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRootPath()
-    {
-        return sprintf('%s/%s/', $this->apiUrl, $this->application);
+        return $absolutePath;
     }
 }
