@@ -29,6 +29,17 @@ class ArStatic implements AdapterInterface
     }
 
     /**
+     * @param string $application
+     * @return self 
+     */
+    public function setApplication($application)
+    {
+        $this->application = $application;
+
+        return $this;
+    }
+
+    /**
      * Write a new file.
      *
      * @param string $path
