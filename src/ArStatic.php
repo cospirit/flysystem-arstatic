@@ -253,16 +253,14 @@ class ArStatic implements AdapterInterface
         $contents = curl_exec($ch);
         curl_close($ch);
 
-        $response = [
-            'contents' => $contents,
-            'path'     => $path,
-        ];
-
         if ($contents === false) {
             return false;
         }
 
-        return $response;
+        return [
+            'contents' => $contents,
+            'path'     => $path,
+        ];
     }
 
     /**
@@ -368,15 +366,11 @@ class ArStatic implements AdapterInterface
      */
     public function getAbsolutePath($slug = '')
     {
-        $absolutePath = sprintf(
-            '%s/%s/',
-            $this->apiUrl,
-            $this->application
-        );
+        $absolutePath = sprintf('%s/%s/', $this->apiUrl, $this->application);
 
         if (!empty($slug)) {
             if ($this->has($slug)) {
-                return $absolutePath + $slug;
+                return $absolutePath . $slug;
             }
 
             return false;
