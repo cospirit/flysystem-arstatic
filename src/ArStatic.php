@@ -30,7 +30,7 @@ class ArStatic implements AdapterInterface
 
     /**
      * @param string $application
-     * @return self 
+     * @return self
      */
     public function setApplication($application)
     {
@@ -69,7 +69,7 @@ class ArStatic implements AdapterInterface
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_exec($ch);
-        $fileInfo = curl_getinfo($ch);
+        $fileInfo = $this->getinfo($ch);
         curl_close($ch);
 
         unlink($tmpFile);
@@ -173,7 +173,7 @@ class ArStatic implements AdapterInterface
         curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$path);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         curl_exec($ch);
-        $response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = $this->getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         return ($response >= 200 && $response < 400) ? true : false;
@@ -232,7 +232,7 @@ class ArStatic implements AdapterInterface
         curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$path);
         curl_setopt($ch, CURLOPT_NOBODY, 1);
         curl_exec($ch);
-        $response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = $this->getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         return ($response >= 200 && $response < 400) ? true : false;
@@ -377,5 +377,31 @@ class ArStatic implements AdapterInterface
         }
 
         return $absolutePath;
+    }
+
+    /**
+     * @param resource $ch
+     * @param int $opt [optional] <p>
+     *
+     * @return mixed If opt is given, returns its value as a string.
+     * Otherwise, returns an associative array.
+     */
+    private function getinfo($ch, $opt = null)
+    {
+        if (curl_errno($ch)) {
+            return false;
+        }
+
+        $response = $opt ? curl_getinfo($ch, $opt) : curl_getinfo($ch);
+
+        // Wait max 5 secondes for streamed response
+        $counter = 0;
+        while (!$response && $counter < 5) {
+            sleep(1);
+            $counter++;
+            $response = curl_getinfo($ch, $opt);
+        }
+
+        return $response;
     }
 }
