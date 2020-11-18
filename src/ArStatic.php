@@ -1,5 +1,5 @@
 <?php
-namespace ArDev\Flysystem\Adapter;
+namespace CoSpirit\Flysystem\Adapter;
 
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
