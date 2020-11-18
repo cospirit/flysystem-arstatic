@@ -1,15 +1,15 @@
 <?php
 
-namespace Test\ArDev\Flysystem\Adapter;
+namespace Test\CoSpirit\Flysystem\Adapter;
 
-use ArDev\Flysystem\Adapter\ArStatic;
+use CoSpirit\Flysystem\Adapter\ArStatic;
 use League\Flysystem\Filesystem;
 
 class ArStaticTest extends \PHPUnit_Framework_TestCase
 {
     protected $apiUrl      = "http://localhost:8989/index.php";
     protected $application = "application-test";
-    protected $slug        = "ar-connect.png";
+    protected $slug        = "cospirit-connect.png";
     protected $slugWrong   = "none.png";
 
     protected function initAdapter()
