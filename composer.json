@@ -1,15 +1,15 @@
 {
-    "name": "ardeveloppement/flysystem-arstatic",
-    "description": "This is an HTTP client based on cURL to consume STATIC API",
-    "homepage": "https://github.com/ArDeveloppement/flysystem-arstatic.git",
+    "name": "cospirit/flysystem-arstatic",
+    "description": "This is an HTTP client based on cURL to consume Static API",
+    "homepage": "https://github.com/cospirit/flysystem-arstatic.git",
     "type": "library",
     "authors": [{
-        "name": "ArDeveloppement",
-        "email": "contact@ardeveloppement.fr"
+        "name": "CoSpirit",
+        "email": "dsi.poledev@cospirit.com"
     }],
 
     "autoload": {
-        "psr-4": { "ArDev\\Flysystem\\Adapter\\": "src" }
+        "psr-4": { "CoSpirit\\Flysystem\\Adapter\\": "src" }
     },
 
     "require": {

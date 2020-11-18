@@ -1,6 +1,6 @@
 # flysystem-arstatic
 
-This is an HTTP client based on cURL to consume STATIC API
+This is an HTTP client based on cURL to consume Static API
 
 ![](http://imagizer.imageshack.com/img912/632/i5am6S.jpg)
 
@@ -12,7 +12,7 @@ This is an HTTP client based on cURL to consume STATIC API
 
 Clone the project
 
-    $ git@github.com:ArDeveloppement/flysystem-arstatic.git
+    $ git@github.com:cospirit/flysystem-arstatic.git
     $ cd flysystem-arstatic
     
 Initialize project
@@ -22,7 +22,7 @@ Initialize project
 ### Usage
 
 ```php
-use ArDev\Flysystem\Adapter\ArStatic;
+use CoSpirit\Flysystem\Adapter\ArStatic;
 use League\Flysystem\Filesystem;
 
 $adapter = new ArStatic($apiUrl);
