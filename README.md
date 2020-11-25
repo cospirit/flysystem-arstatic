@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="doc/cospirit-connect.png">
-</p>
+![CoSpirit Connect](doc/logo.jpg)
 
 # flysystem-arstatic [![CircleCI](https://circleci.com/gh/cospirit/flysystem-arstatic.svg?style=shield&circle-token=83d86dff77250ed8812fe50f0df7ad7085e14261)](https://circleci.com/gh/cospirit/flysystem-arstatic)
 
