@@ -33,8 +33,6 @@ $routes->add(
                     return new JsonResponse(null, 404);
                 }
 
-                var_dump('TEST');
-
                 return new BinaryFileResponse($file);
             }
         ],
