@@ -12,9 +12,16 @@
         "psr-4": { "CoSpirit\\Flysystem\\Adapter\\": "src" }
     },
 
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\CoSpirit\\Flysystem\\Adapter\\": "tests"
+        }
+    },
+
     "require": {
-        "php": ">=5.4",
-        "league/flysystem": "~1.0"
+        "php": ">=7.4",
+        "league/flysystem": "~1.0",
+        "ext-curl": "*"
     },
 
     "require-dev": {
