@@ -38,11 +38,7 @@ $routes->add(
                 return new BinaryFileResponse($file);
             }
         ],
-        [],
-        [],
-        '',
-        [],
-        ['GET']
+        methods: ['GET'],
     )
 );
 
@@ -63,11 +59,7 @@ $routes->add(
                 return new JsonResponse('', 204);
             }
         ],
-        [],
-        [],
-        '',
-        [],
-        ['DELETE']
+        methods: ['DELETE'],
     )
 );
 
@@ -85,11 +77,7 @@ $routes->add(
                 return new Response();
             }
         ],
-        [],
-        [],
-        '',
-        [],
-        ['POST']
+        methods: ['POST'],
     )
 );
 
