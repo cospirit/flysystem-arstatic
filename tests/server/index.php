@@ -1,42 +1,111 @@
 <?php
 
-require_once __DIR__.'/../../vendor/autoload.php';
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
+use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+use Symfony\Component\HttpKernel\EventListener\RouterListener;
+use Symfony\Component\HttpKernel\HttpKernel;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
-$app = new Silex\Application();
-$app['debug'] = true;
+require_once __DIR__.'/../../vendor/autoload.php';
 
 define('TMP_DIR', sys_get_temp_dir().'/testarstatic');
 
-$app->get('/{application}/{slug}', function($application, $slug) use($app) {
-    $file = TMP_DIR.'/'.$application.'/'.$slug;
+$routes = new RouteCollection();
 
-    if (!file_exists($file)) {
-        return $app->json(null, 404);
-    }
+$routes->add(
+    'get_application_slug',
+    new Route(
+        '/{application}/{slug}',
+        [
+            '_controller' => function (string $application, string $slug) {
+                $file = TMP_DIR.'/'.$application.'/'.$slug;
 
-    return new Symfony\Component\HttpFoundation\BinaryFileResponse($file);
-});
+                if (!file_exists($file)) {
+                    return new JsonResponse(null, 404);
+                }
 
-$app->delete('/{application}/{slug}', function($application, $slug) use($app) {
-    $file = TMP_DIR.'/'.$application.'/'.$slug;
+                var_dump('TEST');
 
-    if (!file_exists($file)) {
-        return $app->json('', 404);
-    }
+                return new BinaryFileResponse($file);
+            }
+        ],
+        [],
+        [],
+        '',
+        [],
+        ['GET']
+    )
+);
 
-    unlink($file);
+$routes->add(
+    'delete_application_slug',
+    new Route(
+        '/{application}/{slug}',
+        [
+            '_controller' => function (string $application, string $slug) {
+                $file = TMP_DIR.'/'.$application.'/'.$slug;
 
-    return $app->json('', 204);
-});
+                if (!file_exists($file)) {
+                    return new JsonResponse('', 404);
+                }
 
-$app->post('/{application}', function($application) use($app) {
-    $request = $app['request'];
-    @mkdir(TMP_DIR);
-    @mkdir(TMP_DIR.'/'.$application);
+                unlink($file);
 
-    $request->files->get('file')->move(TMP_DIR.'/'.$application, $request->request->get('slug'));
+                return new JsonResponse('', 204);
+            }
+        ],
+        [],
+        [],
+        '',
+        [],
+        ['DELETE']
+    )
+);
 
-    return '';
-});
+$routes->add(
+    'post_application',
+    new Route(
+        '/{application}',
+        [
+            '_controller' => function (string $application, Request $request) {
+                @mkdir(TMP_DIR);
+                @mkdir(TMP_DIR.'/'.$application);
 
-$app->run();
+                $request->files->get('file')->move(TMP_DIR.'/'.$application, $request->request->get('slug'));
+
+                return new Response();
+            }
+        ],
+        [],
+        [],
+        '',
+        [],
+        ['POST']
+    )
+);
+
+$request = Request::createFromGlobals();
+
+$matcher = new UrlMatcher($routes, new RequestContext());
+
+$dispatcher = new EventDispatcher();
+$dispatcher->addSubscriber(new RouterListener($matcher, new RequestStack()));
+
+$controllerResolver = new ControllerResolver();
+$argumentResolver = new ArgumentResolver();
+
+$kernel = new HttpKernel($dispatcher, $controllerResolver, new RequestStack(), $argumentResolver);
+
+$response = $kernel->handle($request);
+$response->send();
+
+$kernel->terminate($request, $response);
