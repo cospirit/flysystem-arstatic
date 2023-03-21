@@ -5,8 +5,9 @@ namespace Test\CoSpirit\Flysystem\Adapter;
 use CoSpirit\Flysystem\Adapter\ArStatic;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class ArStaticTest extends \PHPUnit_Framework_TestCase
+class ArStaticTest extends TestCase
 {
     protected $apiUrl      = "http://localhost:8989/index.php";
     protected $application = "application-test";
@@ -30,7 +31,7 @@ class ArStaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testRead()
     {
-        $this->setExpectedException(FileNotFoundException::class);
+        $this->expectException(FileNotFoundException::class);
 
         $filesystem = new Filesystem($this->initAdapter());
         $this->assertTrue(is_string($filesystem->read($this->slug)));
@@ -52,7 +53,7 @@ class ArStaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testDelete()
     {
-        $this->setExpectedException(FileNotFoundException::class);
+        $this->expectException(FileNotFoundException::class);
 
         $filesystem = new Filesystem($this->initAdapter());
         $this->assertEquals(true, $filesystem->delete($this->slug));
