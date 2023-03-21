@@ -3,6 +3,7 @@
 namespace Test\CoSpirit\Flysystem\Adapter;
 
 use CoSpirit\Flysystem\Adapter\ArStatic;
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 
 class ArStaticTest extends \PHPUnit_Framework_TestCase
@@ -19,17 +20,18 @@ class ArStaticTest extends \PHPUnit_Framework_TestCase
 
     public function testWrite()
     {
-        $file = __DIR__.'/assets/ar-connect.png';
+        $file = __DIR__.'/assets/cospirit-connect.png';
         $filesystem = new Filesystem($this->initAdapter());
         $this->assertEquals(true, $filesystem->write($this->slug, file_get_contents($file)));
     }
 
     /**
      * @depends testWrite
-     * @expectedException \League\Flysystem\FileNotFoundException
      */
     public function testRead()
     {
+        $this->setExpectedException(FileNotFoundException::class);
+
         $filesystem = new Filesystem($this->initAdapter());
         $this->assertTrue(is_string($filesystem->read($this->slug)));
         $this->assertEquals(false, $filesystem->read($this->slugWrong));
@@ -47,10 +49,11 @@ class ArStaticTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testHas
-     * @expectedException \League\Flysystem\FileNotFoundException
      */
     public function testDelete()
     {
+        $this->setExpectedException(FileNotFoundException::class);
+
         $filesystem = new Filesystem($this->initAdapter());
         $this->assertEquals(true, $filesystem->delete($this->slug));
         $this->assertEquals(false, $filesystem->delete($this->slugWrong));
