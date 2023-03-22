@@ -3,8 +3,10 @@
 namespace Test\CoSpirit\Flysystem\Adapter;
 
 use CoSpirit\Flysystem\Adapter\ArStatic;
-use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
+use League\Flysystem\UnableToDeleteFile;
+use League\Flysystem\UnableToReadFile;
+use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use PHPUnit\Framework\TestCase;
 
 class ArStaticTest extends TestCase
@@ -13,35 +15,43 @@ class ArStaticTest extends TestCase
     protected $application = "application-test";
     protected $slug        = "cospirit-connect.png";
     protected $slugWrong   = "none.png";
+    private readonly string $sourceFile;
 
-    protected function initAdapter()
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
-        return new ArStatic($this->apiUrl, $this->application);
+        parent::__construct($name, $data, $dataName);
+
+        $this->sourceFile = __DIR__.'/assets/cospirit-connect.png';
     }
 
-    public function testWrite()
+    protected function initAdapter(): ArStatic
     {
-        $file = __DIR__.'/assets/cospirit-connect.png';
+        return new ArStatic($this->apiUrl, $this->application, new FinfoMimeTypeDetector());
+    }
+
+    public function testWrite(): void
+    {
         $filesystem = new Filesystem($this->initAdapter());
-        $this->assertEquals(true, $filesystem->write($this->slug, file_get_contents($file)));
+        $filesystem->write($this->slug, file_get_contents($this->sourceFile));
+        $this->assertStringEqualsFile($this->sourceFile, $filesystem->read($this->slug));
     }
 
     /**
      * @depends testWrite
      */
-    public function testRead()
+    public function testRead(): void
     {
-        $this->expectException(FileNotFoundException::class);
-
         $filesystem = new Filesystem($this->initAdapter());
-        $this->assertTrue(is_string($filesystem->read($this->slug)));
-        $this->assertEquals(false, $filesystem->read($this->slugWrong));
+        $this->assertStringEqualsFile($this->sourceFile, $filesystem->read($this->slug));
+
+        $this->expectException(UnableToReadFile::class);
+        $filesystem->read($this->slugWrong);
     }
 
     /**
      * @depends testRead
      */
-    public function testHas()
+    public function testFileExists(): void
     {
         $filesystem = new Filesystem($this->initAdapter());
         $this->assertEquals(true, $filesystem->has($this->slug));
@@ -49,14 +59,15 @@ class ArStaticTest extends TestCase
     }
 
     /**
-     * @depends testHas
+     * @depends testFileExists
      */
-    public function testDelete()
+    public function testDelete(): void
     {
-        $this->expectException(FileNotFoundException::class);
-
         $filesystem = new Filesystem($this->initAdapter());
-        $this->assertEquals(true, $filesystem->delete($this->slug));
-        $this->assertEquals(false, $filesystem->delete($this->slugWrong));
+        $filesystem->delete($this->slug);
+        $this->assertFalse($filesystem->has($this->slug));
+
+        $this->expectException(UnableToDeleteFile::class);
+        $filesystem->delete($this->slugWrong);
     }
 }

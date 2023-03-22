@@ -30,7 +30,7 @@ $routes->add(
                 $file = TMP_DIR.'/'.$application.'/'.$slug;
 
                 if (!file_exists($file)) {
-                    return new JsonResponse(null, 404);
+                    return (new JsonResponse(null, 404))->setData(null);
                 }
 
                 return new BinaryFileResponse($file);
