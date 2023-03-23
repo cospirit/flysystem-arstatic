@@ -1,7 +1,7 @@
 <?php
+
 namespace CoSpirit\Flysystem\Adapter;
 
-use CurlHandle;
 use League\Flysystem\Config;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\FilesystemAdapter;
@@ -25,7 +25,7 @@ class ArStatic implements FilesystemAdapter
         $absolutePath = sprintf('%s/%s/', $this->apiUrl, $this->application);
         if (!empty($slug)) {
             if ($this->fileExists($slug)) {
-                return $absolutePath . $slug;
+                return $absolutePath.$slug;
             }
 
             return false;
@@ -98,14 +98,12 @@ class ArStatic implements FilesystemAdapter
 
     /**
      * Delete a file.
-     *
-     * @param string $path
      */
     public function delete(string $path): void
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$path);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         curl_exec($ch);
         $response = $this->getInfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -117,9 +115,6 @@ class ArStatic implements FilesystemAdapter
 
     /**
      * Set the visibility for a file.
-     *
-     * @param string $path
-     * @param string $visibility
      *
      * @throws NotSupportedException
      */
@@ -163,8 +158,8 @@ class ArStatic implements FilesystemAdapter
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->apiUrl.'/'.$this->application.'/'.$path.'/list');
-        curl_setopt ($curl, CURLOPT_RETURNTRANSFER, true) ;
-        curl_setopt ($curl, CURLOPT_TIMEOUT, '12');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_TIMEOUT, '12');
 
         $root = curl_exec($curl);
         $directories = json_decode($root);
@@ -227,9 +222,9 @@ class ArStatic implements FilesystemAdapter
 
     /**
      * @return mixed If opt is given, returns its value as a string.
-     * Otherwise, returns an associative array.
+     *               Otherwise, returns an associative array.
      */
-    private function getInfo(CurlHandle $ch, int $opt = null): mixed
+    private function getInfo(\CurlHandle $ch, int $opt = null): mixed
     {
         if (curl_errno($ch)) {
             return false;
@@ -241,7 +236,7 @@ class ArStatic implements FilesystemAdapter
         $counter = 0;
         while (!$response && $counter < 5) {
             sleep(1);
-            $counter++;
+            ++$counter;
             $response = curl_getinfo($ch, $opt);
         }
 
