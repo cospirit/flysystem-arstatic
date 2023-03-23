@@ -34,11 +34,7 @@ class ArStatic implements FilesystemAdapter
         return $absolutePath;
     }
 
-    /**
-     * @param string $application
-     * @return self
-     */
-    public function setApplication($application)
+    public function setApplication(string $application): self
     {
         $this->application = $application;
 

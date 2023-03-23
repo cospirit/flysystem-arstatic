@@ -11,10 +11,10 @@ use PHPUnit\Framework\TestCase;
 
 class ArStaticTest extends TestCase
 {
-    protected $apiUrl      = "http://localhost:8989/index.php";
-    protected $application = "application-test";
-    protected $slug        = "cospirit-connect.png";
-    protected $slugWrong   = "none.png";
+    protected string $apiUrl      = "http://localhost:8989/index.php";
+    protected string $application = "application-test";
+    protected string $slug        = "cospirit-connect.png";
+    protected string $slugWrong   = "none.png";
     private readonly string $sourceFile;
 
     public function __construct(?string $name = null, array $data = [], $dataName = '')
