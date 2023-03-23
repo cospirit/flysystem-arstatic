@@ -10,3 +10,5 @@ composer.lock
 
 system.env
 
+/phpstan.neon
+/phpunit.xml
